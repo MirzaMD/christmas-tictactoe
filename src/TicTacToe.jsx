@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
+import { Vstatus } from './Vstatus.jsx';
 import './TicTacToe.css';
 export function TicTacToe(){
     const[cells,setCells]=useState(Array(9).fill(""));
     const[moves,setMoves]=useState("X");
     const[botMove,setBotMove]=useState(false);
+    const[user,setUser]=useState("");
+    const[val,setVal]=useState(0);
+    const[message,setMessage]=useState("");
 function checkWinner(cells){
     const winningCombination=[
         [0,1,2],
@@ -20,12 +24,14 @@ function checkWinner(cells){
     for(let combs of winningCombination){
         const [a,b,c]=combs;
         if(cells[a]!="" && cells[a]==cells[b] && cells[b]==cells[c]){
-             window.alert(`${cells[a]} is the winner!`);
+             setUser(cells[a]);
+             setMessage("is the winner!")
              resetGame();
             return;}
     }
     if(!cells.includes("")){
-         window.alert(`it's a tie`);
+        setUser("");
+        setMessage("it's a tie.")
          resetGame();
          return;
         }
@@ -46,6 +52,7 @@ function playMove(index){
 }
 function resetGame(){
 setCells(Array(9).fill(""));
+setVal(1);
 }
 useEffect(()=>{
     if(botMove){
@@ -71,7 +78,9 @@ useEffect(()=>{
         checkWinner(cells);
     },500);
 },[cells]);
-    return (<section className='grid grid-cols-3 w-[250px] 
+    return (
+    <>
+    <section className='grid grid-cols-3 w-[250px] 
     sm:w-[400px] h-[200px] sm:h-[300px] gap-2 relative  
     top-[150px] sm:top-[100px] left-[10%] sm:left-[35%] 
     right-[20%] sm:right-[15%]
@@ -80,5 +89,7 @@ useEffect(()=>{
             <button key={i} className='bg-teal-300 h-[60px] sm:h-[100px] w-[60px] sm:w-[100px] 
             rounded-sm border-2 border-black' onClick={()=>playMove(i)}>{v}</button>
         ))}
-    </section>)
+    </section>
+    <Vstatus user={user} val={val} message={message} setVal={setVal}/>
+    </>)
 }
